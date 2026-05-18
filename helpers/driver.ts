@@ -1,5 +1,5 @@
-// helpers/driver.js
-const { remote } = require('webdriverio');
+// helpers/driver.ts
+import { remote, Browser } from 'webdriverio';
 
 const caps = {
     platformName: 'Android',
@@ -14,7 +14,7 @@ const caps = {
     'appium:skipServerInstallation': true
 };
 
-async function getDriver() {
+export async function getDriver(): Promise<Browser> {
     const driver = await remote({
         hostname: '127.0.0.1',
         port: 4723,
@@ -23,5 +23,3 @@ async function getDriver() {
     });
     return driver;
 }
-
-module.exports = { getDriver };

@@ -1,10 +1,14 @@
-// test/pages/RegisterInstapayPage.js
-class RegisterInstapayPage {
-    constructor(driver) {
+// test/pages/RegisterInstapayPage.ts
+import { Browser } from 'webdriverio';
+
+export class RegisterInstapayPage {
+    private driver: Browser;
+
+    constructor(driver: Browser) {
         this.driver = driver;
     }
 
-    // Locators
+    // Hapus tipe :Element, biarkan TypeScript infer otomatis
     get nameInput() {
         return this.driver.$('android=new UiSelector().textContains("Name").className("android.widget.EditText")');
     }
@@ -32,9 +36,11 @@ class RegisterInstapayPage {
     get errorMessage() {
         return this.driver.$('android=new UiSelector().className("android.widget.TextView").instance(0)');
     }
+    get successMessage() {
+        return this.driver.$('android=new UiSelector().textContains("Success").className("android.widget.TextView")');
+    }
 
-    // Methods
-    async fillValidForm() {
+    async fillValidForm(): Promise<void> {
         await this.nameInput.click();
         await this.nameInput.setValue('John Doe');
         await this.emailInput.click();
@@ -51,14 +57,20 @@ class RegisterInstapayPage {
         await this.termsCheckbox.click();
     }
 
-    async clickRegisterButton() {
+    async clickRegisterButton(): Promise<void> {
         await this.registerButton.click();
     }
 
-    async getErrorMessage() {
+    async getErrorMessage(): Promise<string> {
         await this.errorMessage.waitForDisplayed({ timeout: 5000 });
         return await this.errorMessage.getText();
     }
-}
 
-module.exports = { RegisterInstapayPage };
+    async hideKeyboard(): Promise<void> {
+        try {
+            await this.driver.hideKeyboard();
+        } catch(e) {
+            // ignore
+        }
+    }
+}
